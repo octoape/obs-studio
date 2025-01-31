@@ -1,20 +1,21 @@
-cmake_minimum_required(VERSION 3.16...3.25)
-
-legacy_check()
+cmake_minimum_required(VERSION 3.28...3.30)
 
 option(ENABLE_WEBRTC "Enable WebRTC Output support" ON)
 if(NOT ENABLE_WEBRTC)
-  message(STATUS "OBS:  DISABLED   obs-webrtc")
+  target_disable(obs-webrtc)
   return()
 endif()
 
-find_package(LibDataChannel REQUIRED)
+find_package(LibDataChannel 0.20 REQUIRED)
 find_package(CURL REQUIRED)
 
 add_library(obs-webrtc MODULE)
 add_library(OBS::webrtc ALIAS obs-webrtc)
 
-target_sources(obs-webrtc PRIVATE obs-webrtc.cpp whip-output.cpp whip-output.h whip-service.cpp whip-service.h)
+target_sources(
+  obs-webrtc
+  PRIVATE obs-webrtc.cpp whip-output.cpp whip-output.h whip-service.cpp whip-service.h whip-utils.h
+)
 
 target_link_libraries(obs-webrtc PRIVATE OBS::libobs LibDataChannel::LibDataChannel CURL::libcurl)
 
